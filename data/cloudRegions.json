@@ -1,0 +1,70 @@
+[
+  {
+    "provider": "AWS",
+    "regions": [
+      {
+        "code": "us-east-1",
+        "name": "N. Virginia, USA",
+        "coords": [-77.4875, 39.0437]
+      },
+      {
+        "code": "eu-west-1",
+        "name": "Ireland",
+        "coords": [-6.2603, 53.3498]
+      },
+      {
+        "code": "ap-east-1",
+        "name": "Hong Kong",
+        "coords": [114.1694, 22.3193]
+      },
+      {
+        "code": "ap-southeast-1",
+        "name": "Singapore",
+        "coords": [103.851959, 1.29027]
+      }
+    ],
+    "color": "#f59e0b"
+  },
+  {
+    "provider": "GCP",
+    "regions": [
+      {
+        "code": "us-central1",
+        "name": "Iowa, USA",
+        "coords": [-93.6091, 41.6005]
+      },
+      {
+        "code": "europe-west4",
+        "name": "Netherlands",
+        "coords": [4.9041, 52.3676]
+      },
+      {
+        "code": "asia-northeast1",
+        "name": "Tokyo, Japan",
+        "coords": [139.6917, 35.6895]
+      }
+    ],
+    "color": "#3b82f6"
+  },
+  {
+    "provider": "Azure",
+    "regions": [
+      {
+        "code": "eastus",
+        "name": "Virginia, USA",
+        "coords": [-78.6569, 37.4316]
+      },
+      {
+        "code": "westeurope",
+        "name": "Netherlands",
+        "coords": [4.899, 52.379]
+      },
+      {
+        "code": "eastasia",
+        "name": "Hong Kong",
+        "coords": [114.1694, 22.3193]
+      }
+    ],
+    "color": "#9333ea"
+  }
+]

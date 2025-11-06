@@ -1,0 +1,50 @@
+[
+  {
+    "from": "Binance",
+    "to": "Bybit",
+    "latencyMs": 42,
+    "color": "green"
+  },
+  {
+    "from": "Binance",
+    "to": "OKX",
+    "latencyMs": 25,
+    "color": "green"
+  },
+  {
+    "from": "Binance",
+    "to": "Deribit",
+    "latencyMs": 152,
+    "color": "red"
+  },
+  {
+    "from": "Bybit",
+    "to": "Deribit",
+    "latencyMs": 185,
+    "color": "red"
+  },
+  {
+    "from": "Bybit",
+    "to": "Kraken",
+    "latencyMs": 198,
+    "color": "red"
+  },
+  {
+    "from": "OKX",
+    "to": "Deribit",
+    "latencyMs": 170,
+    "color": "red"
+  },
+  {
+    "from": "Deribit",
+    "to": "Kraken",
+    "latencyMs": 27,
+    "color": "green"
+  },
+  {
+    "from": "Bybit",
+    "to": "OKX",
+    "latencyMs": 34,
+    "color": "green"
+  }
+]

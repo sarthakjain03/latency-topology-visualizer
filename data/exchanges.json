@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Binance",
+    "provider": "AWS",
+    "region": "ap-east-1",
+    "coords": [114.1694, 22.3193],
+    "city": "Hong Kong",
+    "country": "China (SAR)",
+    "note": "Approx. AWS Hong Kong region; Cloudflare edge in front"
+  },
+  {
+    "name": "Bybit",
+    "provider": "AWS",
+    "region": "ap-southeast-1",
+    "coords": [103.851959, 1.29027],
+    "city": "Singapore",
+    "country": "Singapore",
+    "note": "Likely AWS Singapore; Cloudflare used for edge routing"
+  },
+  {
+    "name": "OKX",
+    "provider": "AWS",
+    "region": "ap-east-1",
+    "coords": [114.1694, 22.3193],
+    "city": "Hong Kong",
+    "country": "China (SAR)",
+    "note": "Approx. AWS Hong Kong; trading infrastructure nearby"
+  },
+  {
+    "name": "Deribit",
+    "provider": "GCP",
+    "region": "europe-west4",
+    "coords": [4.9041, 52.3676],
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "note": "Hosted in GCP or AWS Amsterdam region"
+  },
+  {
+    "name": "Kraken",
+    "provider": "Azure",
+    "region": "westeurope",
+    "coords": [4.899, 52.379],
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "note": "Approx. Azure Amsterdam region"
+  }
+]
