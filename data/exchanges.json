@@ -2,46 +2,61 @@
   {
     "name": "Binance",
     "provider": "AWS",
-    "region": "ap-east-1",
-    "coords": [114.1694, 22.3193],
-    "city": "Hong Kong",
-    "country": "China (SAR)",
-    "note": "Approx. AWS Hong Kong region; Cloudflare edge in front"
+    "region": "us-east-1",
+    "coords": [-77.0369, 38.9072],
+    "city": "Washington D.C.",
+    "country": "United States",
+    "imageUrl": "https://cdn-icons-png.flaticon.com/512/14446/14446125.png",
+    "note": "Likely using AWS North Virginia for low-latency access to US clients"
   },
   {
     "name": "Bybit",
     "provider": "AWS",
-    "region": "ap-southeast-1",
-    "coords": [103.851959, 1.29027],
-    "city": "Singapore",
-    "country": "Singapore",
-    "note": "Likely AWS Singapore; Cloudflare used for edge routing"
+    "region": "ap-northeast-1",
+    "coords": [139.6917, 35.6895],
+    "city": "Tokyo",
+    "country": "Japan",
+    "imageUrl": "https://www.svgrepo.com/show/515223/bybit.svg",
+    "note": "Running on AWS Tokyo region; proximity to Asian trading hubs"
   },
   {
     "name": "OKX",
-    "provider": "AWS",
-    "region": "ap-east-1",
-    "coords": [114.1694, 22.3193],
-    "city": "Hong Kong",
-    "country": "China (SAR)",
-    "note": "Approx. AWS Hong Kong; trading infrastructure nearby"
+    "provider": "GCP",
+    "region": "asia-southeast2",
+    "coords": [121.5654, 25.033],
+    "city": "Taipei",
+    "country": "Taiwan",
+    "imageUrl": "https://cdn-icons-png.flaticon.com/512/10464/10464508.png",
+    "note": "Using GCP Taiwan for low-latency connectivity in East Asia"
   },
   {
     "name": "Deribit",
     "provider": "GCP",
-    "region": "europe-west4",
-    "coords": [4.9041, 52.3676],
-    "city": "Amsterdam",
-    "country": "Netherlands",
-    "note": "Hosted in GCP or AWS Amsterdam region"
+    "region": "europe-west3",
+    "coords": [11.582, 48.1351],
+    "city": "Munich",
+    "country": "Germany",
+    "imageUrl": "https://www.svgrepo.com/show/331361/deribit.svg",
+    "note": "GCP Frankfurt/Munich region preferred for European latency optimization"
   },
   {
     "name": "Kraken",
     "provider": "Azure",
-    "region": "westeurope",
-    "coords": [4.899, 52.379],
-    "city": "Amsterdam",
-    "country": "Netherlands",
-    "note": "Approx. Azure Amsterdam region"
+    "region": "uksouth",
+    "coords": [-0.1276, 51.5072],
+    "city": "London",
+    "country": "United Kingdom",
+    "imageUrl": "https://play-lh.googleusercontent.com/G-mTJMGsq2k6jzWzhW9DpPQ_shO6wjoQOyLxFdHrzEbuUDsk1XZqYFlmLq6aA-yev7k",
+    "note": "Azure London region used for European and institutional access"
+  },
+  {
+    "name": "Coinbase Pro",
+    "provider": "Azure",
+    "region": "sa-east-1",
+    "coords": [-46.6333, -23.5505],
+    "city": "São Paulo",
+    "country": "Brazil",
+    "imageUrl": "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
+    "note": "Operating via AWS São Paulo for optimized latency to Latin American users"
   }
 ]
