@@ -1,3 +1,4 @@
+"use client";
 import { colorMapping } from "@/lib/constants";
 // import { colorMapping, exchangeServerLogos } from "@/lib/constants";
 // import Image from "next/image";

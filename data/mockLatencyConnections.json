@@ -1,50 +1,128 @@
 [
   {
-    "from": "Binance",
-    "to": "Bybit",
+    "exchange": "Binance",
+    "provider": "AWS",
+    "regionCode": "us-east-1",
     "latencyMs": 42,
-    "color": "green"
+    "note": "Binance connecting to AWS North Virginia region for US client access"
   },
   {
-    "from": "Binance",
-    "to": "OKX",
-    "latencyMs": 25,
-    "color": "green"
+    "exchange": "Binance",
+    "provider": "GCP",
+    "regionCode": "asia-southeast2",
+    "latencyMs": 120,
+    "note": "Binance connected to GCP Jakarta for Southeast Asian traffic balancing"
   },
   {
-    "from": "Binance",
-    "to": "Deribit",
-    "latencyMs": 152,
-    "color": "red"
+    "exchange": "Binance",
+    "provider": "Azure",
+    "regionCode": "uksouth",
+    "latencyMs": 175,
+    "note": "Binance peering with Azure London for European redundancy"
   },
   {
-    "from": "Bybit",
-    "to": "Deribit",
-    "latencyMs": 185,
-    "color": "red"
+    "exchange": "Bybit",
+    "provider": "AWS",
+    "regionCode": "ap-northeast-1",
+    "latencyMs": 55,
+    "note": "Bybit utilizing AWS Tokyo region for low-latency Asian routing"
   },
   {
-    "from": "Bybit",
-    "to": "Kraken",
-    "latencyMs": 198,
-    "color": "red"
+    "exchange": "Bybit",
+    "provider": "GCP",
+    "regionCode": "europe-west3",
+    "latencyMs": 200,
+    "note": "Bybit connecting to GCP Frankfurt as a secondary European backup"
   },
   {
-    "from": "OKX",
-    "to": "Deribit",
+    "exchange": "Bybit",
+    "provider": "Azure",
+    "regionCode": "sa-east-1",
+    "latencyMs": 240,
+    "note": "Bybit linked with Azure São Paulo for emerging South American markets"
+  },
+  {
+    "exchange": "OKX",
+    "provider": "GCP",
+    "regionCode": "asia-southeast2",
+    "latencyMs": 40,
+    "note": "OKX connected to GCP Jakarta for East Asia network optimization"
+  },
+  {
+    "exchange": "OKX",
+    "provider": "AWS",
+    "regionCode": "us-east-1",
     "latencyMs": 170,
-    "color": "red"
+    "note": "OKX connected to AWS Virginia for US-based traffic distribution"
   },
   {
-    "from": "Deribit",
-    "to": "Kraken",
-    "latencyMs": 27,
-    "color": "green"
+    "exchange": "OKX",
+    "provider": "Azure",
+    "regionCode": "uksouth",
+    "latencyMs": 210,
+    "note": "OKX routing to Azure London for European traders"
   },
   {
-    "from": "Bybit",
-    "to": "OKX",
-    "latencyMs": 34,
-    "color": "green"
+    "exchange": "Deribit",
+    "provider": "GCP",
+    "regionCode": "europe-west3",
+    "latencyMs": 28,
+    "note": "Deribit linked to GCP Frankfurt for European traders"
+  },
+  {
+    "exchange": "Deribit",
+    "provider": "AWS",
+    "regionCode": "ap-northeast-1",
+    "latencyMs": 220,
+    "note": "Deribit connecting to AWS Tokyo for cross-continental backup routes"
+  },
+  {
+    "exchange": "Deribit",
+    "provider": "Azure",
+    "regionCode": "sa-east-1",
+    "latencyMs": 260,
+    "note": "Deribit linked with Azure São Paulo for South American access"
+  },
+  {
+    "exchange": "Kraken",
+    "provider": "Azure",
+    "regionCode": "uksouth",
+    "latencyMs": 35,
+    "note": "Kraken operating via Azure London region for institutional access"
+  },
+  {
+    "exchange": "Kraken",
+    "provider": "AWS",
+    "regionCode": "us-east-1",
+    "latencyMs": 65,
+    "note": "Kraken peering with AWS North Virginia for transatlantic low-latency routing"
+  },
+  {
+    "exchange": "Kraken",
+    "provider": "GCP",
+    "regionCode": "asia-southeast2",
+    "latencyMs": 185,
+    "note": "Kraken using GCP Jakarta for Pacific-region overflow traffic"
+  },
+  {
+    "exchange": "Coinbase Pro",
+    "provider": "AWS",
+    "regionCode": "sa-east-1",
+    "latencyMs": 63,
+    "note": "Coinbase Pro using AWS São Paulo for low-latency Latin American connectivity"
+  },
+  {
+    "exchange": "Coinbase Pro",
+    "provider": "Azure",
+    "regionCode": "uksouth",
+    "latencyMs": 95,
+    "note": "Coinbase Pro connecting to Azure London for European compliance routing"
+  },
+  {
+    "exchange": "Coinbase Pro",
+    "provider": "GCP",
+    "regionCode": "europe-west3",
+    "latencyMs": 102,
+    "note": "Coinbase Pro utilizing GCP Frankfurt for redundancy and EU presence"
   }
 ]
