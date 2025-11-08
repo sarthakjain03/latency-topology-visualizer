@@ -27,8 +27,15 @@ export type FilterState = {
 };
 
 export const useFilterStore = create<FilterState>((set) => ({
-  selectedExchanges: [],
-  selectedProviders: [],
+  selectedExchanges: [
+    "Binance",
+    "Bybit",
+    "OKX",
+    "Deribit",
+    "Kraken",
+    "Coinbase Pro",
+  ],
+  selectedProviders: ["AWS", "GCP", "Azure"],
   latencyRange: [0, 300],
   query: "",
 

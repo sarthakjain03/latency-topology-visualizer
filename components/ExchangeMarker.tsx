@@ -81,7 +81,7 @@ const ExchangeMarker = ({
     };
   }, []);
 
-  return <div>Exchange Marker</div>;
+  return null;
 };
 
 export default ExchangeMarker;

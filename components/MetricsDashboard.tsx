@@ -4,14 +4,8 @@ import mockLatency from "@/data/mockLatencyConnections.json"; // adjust path as 
 import { useFilterStore } from "@/hooks/useFilterStore";
 
 const MetricsDashboard: React.FC = () => {
-  const {
-    selectedExchanges,
-    selectedProviders,
-    latencyRange,
-    query,
-    showRealtime,
-    showHistorical,
-  } = useFilterStore();
+  const { selectedExchanges, selectedProviders, latencyRange, query } =
+    useFilterStore();
 
   // filter connections based on store
   const filtered = useMemo(() => {
@@ -80,11 +74,6 @@ const MetricsDashboard: React.FC = () => {
           <div className="text-xs text-muted-foreground">Exchanges Visible</div>
           <div className="text-lg font-medium">{stats.visibleExchanges}</div>
         </div>
-      </div>
-
-      <div className="mt-3 text-xs text-muted-foreground">
-        Mode: {showRealtime ? "Realtime" : "Realtime off"} · Historical:{" "}
-        {showHistorical ? "On" : "Off"}
       </div>
     </div>
   );

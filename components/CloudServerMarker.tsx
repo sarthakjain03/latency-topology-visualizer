@@ -71,7 +71,7 @@ const CloudServerMarker = ({
     };
   }, []);
 
-  return <div>CloudServer Marker</div>;
+  return null;
 };
 
 export default CloudServerMarker;

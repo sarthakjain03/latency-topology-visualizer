@@ -278,7 +278,7 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
     }, 500);
   }, [map, features]);
 
-  return <div>LatencyConnections</div>;
+  return null;
 };
 
 export default LatencyConnections;
