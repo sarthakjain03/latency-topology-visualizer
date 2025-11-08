@@ -11,9 +11,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
 
-mapboxgl.accessToken = process.env.NEXT_MAPBOX_ACCESS_TOKEN;
-
-const cloudFlareAccessToken = process.env.NEXT_CLOUDFLARE_API_TOKEN;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);

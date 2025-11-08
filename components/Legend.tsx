@@ -5,7 +5,7 @@ import { colorMapping } from "@/lib/constants";
 
 const Legend = () => {
   return (
-    <div className="absolute bottom-6 left-6 rounded-lg bg-black/40 py-4 px-5">
+    <div className="absolute top-6 left-6 rounded-lg bg-black/40 py-4 px-5">
       <div className="flex flex-col gap-6">
         <div>
           <p className="mb-2 font-semibold text-xl">Cloud Providers</p>
@@ -16,8 +16,8 @@ const Legend = () => {
                 key={`${provider}-${color}`}
               >
                 <div
-                  className={`border-3 rounded-full w-9 h-9`}
-                  style={{ borderColor: color }}
+                  className={`rounded-full w-6 h-6`}
+                  style={{ backgroundColor: color }}
                 />
                 <span>{provider}</span>
               </div>
