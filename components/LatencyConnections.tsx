@@ -168,6 +168,7 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
     }
 
     return () => {
+      if (!map) return;
       map.removeLayer("low-latency-lines");
       map.removeLayer("medium-latency-lines");
       map.removeLayer("high-latency-lines");

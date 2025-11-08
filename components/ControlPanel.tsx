@@ -21,7 +21,6 @@ const ControlPanel: React.FC = () => {
     query,
     showRealtime,
     showRegions,
-    showHistorical,
     toggleExchange,
     toggleProvider,
     setLatencyRange,
@@ -41,8 +40,8 @@ const ControlPanel: React.FC = () => {
 
   return (
     <aside className="w-80 p-4 space-y-4 bg-slate-900/60 rounded-lg text-white">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Control Panel</h2>
+      <div className="flex items-center justify-end">
+        {/* <h2 className="text-lg font-bold">Control Panel</h2> */}
         <Button variant="ghost" size="sm" onClick={() => resetAll()}>
           Reset
         </Button>
@@ -123,6 +122,14 @@ const ControlPanel: React.FC = () => {
 
       {/* Layer toggles */}
       <div className="flex flex-col gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setLayer("historical", true)}
+        >
+          Show Historical Data
+        </Button>
+
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm">Realtime</div>
@@ -135,7 +142,7 @@ const ControlPanel: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <div>
             <div className="text-sm">Historical</div>
             <div className="text-xs text-gray-400">Show time-series panels</div>
@@ -145,7 +152,7 @@ const ControlPanel: React.FC = () => {
             onCheckedChange={(v: boolean) => setLayer("historical", !!v)}
             className="data-[state=checked]:bg-sky-400 data-[state=unchecked]:bg-slate-700"
           />
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-between">
           <div>
