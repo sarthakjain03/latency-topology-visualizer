@@ -4,37 +4,28 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { logos, colorMapping } from "@/lib/constants";
 
-const Marker = ({
+const CloudServerMarker = ({
   map,
   lngLat,
   provider,
-  crytoOrg,
-  imageUrl,
-  city,
   country,
+  code,
 }: {
   map: mapboxgl.Map | null;
   lngLat: [number, number];
   provider: "AWS" | "GCP" | "Azure";
-  crytoOrg: string;
-  imageUrl: string;
-  city: string;
   country: string;
+  code: string;
 }) => {
   useEffect(() => {
     if (!map || !provider || !lngLat) return;
 
     const element = document.createElement("div");
     element.className = "custom-marker";
-    element.style.width = "36px";
-    element.style.height = "36px";
+    element.style.width = "12px";
+    element.style.height = "12px";
     element.style.borderRadius = "50%";
-    element.style.overflow = "hidden";
-    element.style.border = `3px solid ${colorMapping[provider]}`;
-    element.style.backgroundColor = "white";
-    element.style.backgroundImage = `url(${imageUrl})`;
-    element.style.backgroundSize = "cover";
-    element.style.backgroundPosition = "center";
+    element.style.backgroundColor = `${colorMapping[provider]}`;
 
     const marker = new mapboxgl.Marker(element)
       .setLngLat(lngLat)
@@ -47,24 +38,22 @@ const Marker = ({
 
     const el = marker.getElement();
     el.addEventListener("mouseenter", () => {
-      // el.style.transform = "scale(0.8)";
       popup
         .setLngLat(lngLat)
         .setHTML(
           `
           <div class="popup-container">
             <div class="popup-header">
-              <img src="${imageUrl}" alt="${crytoOrg}" class="popup-org-logo" />
+              <img src="${logos[provider]}" alt="${provider}" class="popup-org-logo" />
               <div class="popup-org-info">
-                <h3>${crytoOrg}</h3>
+                <h3>${provider}</h3>
                 <p class="popup-provider">
-                  <img src="${logos[provider]}" alt="${provider}" class="popup-provider-logo" />
-                  <span>${provider}</span>
+                  <span>${code}</span>
                 </p>
               </div>
             </div>
             <div class="popup-location">
-              <span>📍 ${city}, ${country}</span>
+              <span>📍 ${country}</span>
             </div>
           </div>
         `
@@ -73,7 +62,6 @@ const Marker = ({
     });
 
     el.addEventListener("mouseleave", () => {
-      // el.style.transform = "scale(1)";
       popup.remove();
     });
 
@@ -83,7 +71,7 @@ const Marker = ({
     };
   }, []);
 
-  return <div>Hello</div>;
+  return <div>CloudServer Marker</div>;
 };
 
-export default Marker;
+export default CloudServerMarker;

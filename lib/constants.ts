@@ -7,8 +7,8 @@ export const logos: Record<string, string> = {
 
 export const colorMapping: Record<string, string> = {
   AWS: "blue",
-  GCP: "red",
-  Azure: "yellow",
+  GCP: "purple",
+  Azure: "orange",
 };
 
 export const exchangeServerLogos: Record<string, string> = {

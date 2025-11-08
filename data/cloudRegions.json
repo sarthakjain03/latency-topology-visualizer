@@ -12,8 +12,7 @@
         "name": "Tokyo Region (South Korea Node), Seoul, South Korea",
         "coords": [126.978, 37.5665]
       }
-    ],
-    "color": "#f59e0b"
+    ]
   },
   {
     "provider": "GCP",
@@ -28,8 +27,7 @@
         "name": "Frankfurt Region (Switzerland Node), Zurich, Switzerland",
         "coords": [8.5417, 47.3769]
       }
-    ],
-    "color": "#3b82f6"
+    ]
   },
   {
     "provider": "Azure",
@@ -44,7 +42,6 @@
         "name": "São Paulo Region (Argentina Node), Buenos Aires, Argentina",
         "coords": [-58.3816, -34.6037]
       }
-    ],
-    "color": "#9333ea"
+    ]
   }
 ]

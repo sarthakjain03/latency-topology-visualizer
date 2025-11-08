@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import Marker from "./Marker";
+import ExchangeMarker from "./ExchangeMarker";
+import CloudServerMarker from "./CloudServerMarker";
 import Legend from "./Legend";
 import LatencyConnections from "./LatencyConnections";
 
@@ -8,9 +9,11 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import exchanges from "@/data/exchanges.json";
+import cloudRegions from "@/data/cloudRegions.json";
 
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoic2FydGhha2oyMyIsImEiOiJjbWhuaGxiZXcwMGluMmpzaThoYTgwdmU5In0.h3k75-UOrlY0-C0AQHccQw";
+mapboxgl.accessToken = process.env.NEXT_MAPBOX_ACCESS_TOKEN;
+
+const cloudFlareAccessToken = process.env.NEXT_CLOUDFLARE_API_TOKEN;
 
 const Map = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -51,7 +54,7 @@ const Map = () => {
       {isMapReady &&
         parentMapRef &&
         exchanges?.map((exchange) => (
-          <Marker
+          <ExchangeMarker
             key={`${exchange.name}-marker`}
             map={parentMapRef}
             lngLat={exchange.coords as [number, number]}
@@ -62,6 +65,20 @@ const Map = () => {
             country={exchange.country}
           />
         ))}
+      {isMapReady &&
+        parentMapRef &&
+        cloudRegions?.map((cloudData) =>
+          cloudData?.regions?.map((region) => (
+            <CloudServerMarker
+              key={`${cloudData.provider}-${region.code}-marker`}
+              map={parentMapRef}
+              lngLat={region.coords as [number, number]}
+              provider={cloudData.provider as "AWS" | "GCP" | "Azure"}
+              country={region.name}
+              code={region.code}
+            />
+          ))
+        )}
       {isMapReady && <Legend />}
       {parentMapRef && <LatencyConnections map={parentMapRef} />}
     </>
