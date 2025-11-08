@@ -11,6 +11,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
 
+import { useFilterStore } from "@/hooks/useFilterStore";
+
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const Map = () => {
@@ -19,6 +21,8 @@ const Map = () => {
 
   const [isMapReady, setIsMapReady] = useState(false);
   const [parentMapRef, setParentMapRef] = useState<mapboxgl.Map | null>(null);
+
+  const { selectedExchanges, selectedProviders } = useFilterStore();
 
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
@@ -49,36 +53,40 @@ const Map = () => {
   return (
     <>
       <div id="map-container" className="h-full" ref={mapContainerRef}></div>
-      {isMapReady &&
-        parentMapRef &&
-        exchanges?.map((exchange) => (
-          <ExchangeMarker
-            key={`${exchange.name}-marker`}
-            map={parentMapRef}
-            lngLat={exchange.coords as [number, number]}
-            provider={exchange.provider as "AWS" | "GCP" | "Azure"}
-            crytoOrg={exchange.name}
-            imageUrl={exchange.imageUrl}
-            city={exchange.city}
-            country={exchange.country}
-          />
-        ))}
-      {isMapReady &&
-        parentMapRef &&
-        cloudRegions?.map((cloudData) =>
-          cloudData?.regions?.map((region) => (
-            <CloudServerMarker
-              key={`${cloudData.provider}-${region.code}-marker`}
-              map={parentMapRef}
-              lngLat={region.coords as [number, number]}
-              provider={cloudData.provider as "AWS" | "GCP" | "Azure"}
-              country={region.name}
-              code={region.code}
-            />
-          ))
-        )}
-      {isMapReady && <Legend />}
-      {parentMapRef && <LatencyConnections map={parentMapRef} />}
+      {isMapReady && parentMapRef && (
+        <>
+          {exchanges
+            ?.filter((exchange) => selectedExchanges?.includes(exchange.name))
+            ?.map((exchange) => (
+              <ExchangeMarker
+                key={`${exchange.name}-marker`}
+                map={parentMapRef}
+                lngLat={exchange.coords as [number, number]}
+                provider={exchange.provider as "AWS" | "GCP" | "Azure"}
+                crytoOrg={exchange.name}
+                imageUrl={exchange.imageUrl}
+                city={exchange.city}
+                country={exchange.country}
+              />
+            ))}
+          {cloudRegions
+            ?.filter((cloud) => selectedProviders?.includes(cloud.provider))
+            ?.map((cloudData) =>
+              cloudData?.regions?.map((region) => (
+                <CloudServerMarker
+                  key={`${cloudData.provider}-${region.code}-marker`}
+                  map={parentMapRef}
+                  lngLat={region.coords as [number, number]}
+                  provider={cloudData.provider as "AWS" | "GCP" | "Azure"}
+                  country={region.name}
+                  code={region.code}
+                />
+              ))
+            )}
+          <Legend />
+          <LatencyConnections map={parentMapRef} />
+        </>
+      )}
     </>
   );
 };

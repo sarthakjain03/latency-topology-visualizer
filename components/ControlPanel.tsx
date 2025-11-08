@@ -21,6 +21,7 @@ const ControlPanel: React.FC = () => {
     query,
     showRealtime,
     showRegions,
+    showHistorical,
     toggleExchange,
     toggleProvider,
     setLatencyRange,
@@ -134,7 +135,7 @@ const ControlPanel: React.FC = () => {
           />
         </div>
 
-        {/* <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div>
             <div className="text-sm">Historical</div>
             <div className="text-xs text-gray-400">Show time-series panels</div>
@@ -144,7 +145,7 @@ const ControlPanel: React.FC = () => {
             onCheckedChange={(v: boolean) => setLayer("historical", !!v)}
             className="data-[state=checked]:bg-sky-400 data-[state=unchecked]:bg-slate-700"
           />
-        </div> */}
+        </div>
 
         <div className="flex items-center justify-between">
           <div>

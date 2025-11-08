@@ -1,60 +1,88 @@
 "use client";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
 import mockLatencyConnections from "@/data/mockLatencyConnections.json";
 import { Feature } from "geojson";
 
+import { useFilterStore } from "@/hooks/useFilterStore";
+
 const greenShades = [
-  "#4ade80", // medium-light
-  "#22c55e", // medium
+  "#22c55e", // medium-light
+  "green", // medium
 ];
 
 const yellowShades = [
-  "#facc15", // medium-light
+  "yellow", // medium-light
   "#eab308", // medium
 ];
 
 const redShades = [
   "#f87171", // medium-light
-  "#ef4444", // medium
+  "red", // medium
 ];
 
 const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
-  const features: Feature[] = mockLatencyConnections
-    .map((conn) => {
-      const exchange = exchanges.find((e) => e.name === conn.exchange);
-      const provider = cloudRegions.find((p) => p.provider === conn.provider);
-      const region = provider?.regions.find((r) => r.code === conn.regionCode);
+  const { latencyRange, selectedExchanges, selectedProviders } =
+    useFilterStore();
 
-      if (!exchange?.coords || !region?.coords) return null;
+  const features: Feature[] = useMemo(
+    () =>
+      mockLatencyConnections
+        .filter(
+          (conn) =>
+            conn.latencyMs >= latencyRange[0] &&
+            conn.latencyMs <= latencyRange[1]
+        )
+        .map((conn) => {
+          const exchange = exchanges
+            .filter((e) => selectedExchanges?.includes(e.name))
+            .find((e) => e.name === conn.exchange);
+          const provider = cloudRegions
+            .filter((p) => selectedProviders?.includes(p.provider))
+            .find((p) => p.provider === conn.provider);
+          const region = provider?.regions.find(
+            (r) => r.code === conn.regionCode
+          );
 
-      return {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: [exchange?.coords, region?.coords],
-        },
-        properties: {
-          latency: conn.latencyMs,
-          color:
-            conn.latencyMs < 60
-              ? "green"
-              : conn.latencyMs < 120
-              ? "yellow"
-              : "red",
-        },
-      } as Feature;
-    })
-    .filter((f): f is Feature => f !== null);
+          if (!exchange?.coords || !region?.coords) return null;
 
-  const lowLatencyFeatures = features.filter((f) => f.properties?.latency < 60);
-  const mediumLatencyFeatures = features.filter(
-    (f) => f.properties?.latency >= 60 && f.properties?.latency < 120
+          return {
+            type: "Feature",
+            geometry: {
+              type: "LineString",
+              coordinates: [exchange?.coords, region?.coords],
+            },
+            properties: {
+              latency: conn.latencyMs,
+              color:
+                conn.latencyMs < 60
+                  ? "green"
+                  : conn.latencyMs < 120
+                  ? "yellow"
+                  : "red",
+            },
+          } as Feature;
+        })
+        .filter((f): f is Feature => f !== null),
+    [latencyRange, selectedExchanges, selectedProviders]
   );
-  const highLatencyFeatures = features.filter(
-    (f) => f.properties?.latency >= 120
+
+  const lowLatencyFeatures = useMemo(
+    () => features.filter((f) => f.properties?.latency < 60),
+    [features]
+  );
+  const mediumLatencyFeatures = useMemo(
+    () =>
+      features.filter(
+        (f) => f.properties?.latency >= 60 && f.properties?.latency < 120
+      ),
+    [features]
+  );
+  const highLatencyFeatures = useMemo(
+    () => features.filter((f) => f.properties?.latency >= 120),
+    [features]
   );
 
   const addSourceAndLayer = useCallback(
@@ -148,7 +176,7 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
       map.removeSource("medium-latencies");
       map.removeSource("high-latencies");
     };
-  }, [map]);
+  }, [map, features]);
 
   useEffect(() => {
     if (!map) return;
@@ -166,6 +194,7 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
 
   useEffect(() => {
     if (!map) return;
+    let animationFrameId: number;
 
     const startAnimation = () => {
       let index1 = 0;
@@ -250,33 +279,22 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
           }
         }
 
-        requestAnimationFrame(frame);
+        animationFrameId = requestAnimationFrame(frame);
       };
       frame();
     };
 
-    // const animatePulse = () => {
-    //   let t = 0;
-
-    //   const frame = () => {
-    //     t += 0.05;
-    //     const opacity = 0.6 + 0.4 * Math.sin(t); // oscillate between 0.2 and 1.0
-
-    //     if (map.getLayer("latency-lines")) {
-    //       map.setPaintProperty("latency-lines", "line-opacity", opacity);
-    //     }
-
-    //     requestAnimationFrame(frame);
-    //   };
-
-    //   frame();
-    // };
+    map.off("styledata", startAnimation);
 
     setTimeout(() => {
       if (map.isStyleLoaded()) startAnimation();
       else map.once("load", startAnimation);
     }, 500);
-  }, [map, features]);
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [map]);
 
   return null;
 };
