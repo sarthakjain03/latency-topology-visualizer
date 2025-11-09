@@ -9,22 +9,22 @@ import { Feature } from "geojson";
 import { useFilterStore } from "@/hooks/useFilterStore";
 
 const greenShades = [
-  "#22c55e", // medium-light
+  "#22c55e", // light
   "green", // medium
 ];
 
 const yellowShades = [
-  "yellow", // medium-light
+  "yellow", // light
   "#eab308", // medium
 ];
 
 const redShades = [
-  "#f87171", // medium-light
+  "#f87171", // light
   "red", // medium
 ];
 
 const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
-  const { latencyRange, selectedExchanges, selectedProviders } =
+  const { latencyRange, selectedExchanges, selectedProviders, showRealtime } =
     useFilterStore();
 
   const features: Feature[] = useMemo(
@@ -33,7 +33,8 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
         .filter(
           (conn) =>
             conn.latencyMs >= latencyRange[0] &&
-            conn.latencyMs <= latencyRange[1]
+            conn.latencyMs <= latencyRange[1] &&
+            showRealtime
         )
         .map((conn) => {
           const exchange = exchanges
@@ -66,7 +67,7 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
           } as Feature;
         })
         .filter((f): f is Feature => f !== null),
-    [latencyRange, selectedExchanges, selectedProviders]
+    [latencyRange, selectedExchanges, selectedProviders, showRealtime]
   );
 
   const lowLatencyFeatures = useMemo(
