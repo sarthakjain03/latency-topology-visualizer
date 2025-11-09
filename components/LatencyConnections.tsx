@@ -1,35 +1,63 @@
 "use client";
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
 import mockLatencyConnections from "@/data/mockLatencyConnections.json";
 import { Feature } from "geojson";
-
 import { useFilterStore } from "@/hooks/useFilterStore";
 
-const greenShades = [
-  "#22c55e", // light
-  "green", // medium
-];
+interface MockLatencyConnection {
+  exchange: string;
+  provider: string;
+  regionCode: string;
+  latencyMs: number;
+  [key: string]: any;
+}
 
-const yellowShades = [
-  "yellow", // light
-  "#eab308", // medium
-];
+const greenShades = ["#22c55e", "green"];
+const yellowShades = ["yellow", "#eab308"];
+const redShades = ["#f87171", "red"];
 
-const redShades = [
-  "#f87171", // light
-  "red", // medium
-];
-
-const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
+const LatencyConnections = ({
+  map,
+  realTimeData,
+}: {
+  map: mapboxgl.Map | null;
+  realTimeData: number[];
+}) => {
   const { latencyRange, selectedExchanges, selectedProviders, showRealtime } =
     useFilterStore();
+  const [latencyConnectionData, setLatencyConnectionData] = useState<
+    MockLatencyConnection[]
+  >([]);
+
+  const updateMockLatencies = (
+    mockData: MockLatencyConnection[],
+    realtimeLatencies: number[]
+  ): MockLatencyConnection[] => {
+    return mockData?.map((conn, index) => {
+      const newLatency =
+        index < realtimeLatencies?.length
+          ? realtimeLatencies?.[index]
+          : conn.latencyMs;
+
+      return {
+        ...conn,
+        latencyMs: newLatency,
+      };
+    });
+  };
+
+  useEffect(() => {
+    setLatencyConnectionData(
+      updateMockLatencies(mockLatencyConnections, realTimeData)
+    );
+  }, [realTimeData]);
 
   const features: Feature[] = useMemo(
     () =>
-      mockLatencyConnections
+      latencyConnectionData
         .filter(
           (conn) =>
             conn.latencyMs >= latencyRange[0] &&
@@ -67,7 +95,13 @@ const LatencyConnections = ({ map }: { map: mapboxgl.Map | null }) => {
           } as Feature;
         })
         .filter((f): f is Feature => f !== null),
-    [latencyRange, selectedExchanges, selectedProviders, showRealtime]
+    [
+      latencyRange,
+      selectedExchanges,
+      selectedProviders,
+      showRealtime,
+      latencyConnectionData,
+    ]
   );
 
   const lowLatencyFeatures = useMemo(

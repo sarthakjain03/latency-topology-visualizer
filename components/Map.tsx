@@ -13,6 +13,7 @@ import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
 
 import { useFilterStore } from "@/hooks/useFilterStore";
+import { useRealTimeLatency } from "@/hooks/useRealTimeLatency";
 import HistoricalModal from "./HistoricalModal";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -24,6 +25,7 @@ const Map = () => {
   const [isMapReady, setIsMapReady] = useState(false);
   const [parentMapRef, setParentMapRef] = useState<mapboxgl.Map | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+  const { data: realTimeData, isLoading, error } = useRealTimeLatency();
 
   const {
     selectedExchanges,
@@ -172,7 +174,12 @@ const Map = () => {
             )}
 
           <Legend />
-          <LatencyConnections map={parentMapRef} />
+          {!isLoading && !error && (
+            <LatencyConnections
+              map={parentMapRef}
+              realTimeData={realTimeData as number[]}
+            />
+          )}
           <CloudRegionsLayer map={parentMapRef} />
         </>
       )}

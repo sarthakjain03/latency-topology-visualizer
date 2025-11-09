@@ -1,25 +1,20 @@
 "use client";
 import React, { useMemo } from "react";
-import mockLatency from "@/data/mockLatencyConnections.json"; // adjust path as needed
+import mockLatency from "@/data/mockLatencyConnections.json";
 import { useFilterStore } from "@/hooks/useFilterStore";
 
 const MetricsDashboard: React.FC = () => {
   const { selectedExchanges, selectedProviders, latencyRange, query } =
     useFilterStore();
 
-  // filter connections based on store
   const filtered = useMemo(() => {
     return mockLatency.filter((c) => {
-      // exchange filter
       if (selectedExchanges.length && !selectedExchanges.includes(c.exchange))
         return false;
-      // provider filter
       if (selectedProviders.length && !selectedProviders.includes(c.provider))
         return false;
-      // latency range
       if (c.latencyMs < latencyRange[0] || c.latencyMs > latencyRange[1])
         return false;
-      // query filter (match exchange or regionCode)
       if (query) {
         const q = query.toLowerCase();
         if (
@@ -40,7 +35,6 @@ const MetricsDashboard: React.FC = () => {
     const min = count ? Math.min(...filtered.map((c) => c.latencyMs)) : 0;
     const max = count ? Math.max(...filtered.map((c) => c.latencyMs)) : 0;
 
-    // number of visible exchanges
     const visibleExchanges = Array.from(
       new Set(filtered.map((c) => c.exchange))
     ).length;
