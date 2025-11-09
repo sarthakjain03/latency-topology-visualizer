@@ -1,14 +1,14 @@
 "use client";
 import React, { useMemo } from "react";
-import mockLatency from "@/data/mockLatencyConnections.json";
+import latencyConnections from "@/data/latencyConnections.json";
 import { useFilterStore } from "@/hooks/useFilterStore";
 
 const MetricsDashboard: React.FC = () => {
   const { selectedExchanges, selectedProviders, latencyRange, query } =
     useFilterStore();
 
-  const filtered = useMemo(() => {
-    return mockLatency.filter((c) => {
+  const filteredData = useMemo(() => {
+    return latencyConnections.filter((c) => {
       if (selectedExchanges.length && !selectedExchanges.includes(c.exchange))
         return false;
       if (selectedProviders.length && !selectedProviders.includes(c.provider))
@@ -28,19 +28,19 @@ const MetricsDashboard: React.FC = () => {
   }, [selectedExchanges, selectedProviders, latencyRange, query]);
 
   const stats = useMemo(() => {
-    const count = filtered.length;
+    const count = filteredData.length;
     const avg = count
-      ? Math.round(filtered.reduce((s, c) => s + c.latencyMs, 0) / count)
+      ? Math.round(filteredData.reduce((s, c) => s + c.latencyMs, 0) / count)
       : 0;
-    const min = count ? Math.min(...filtered.map((c) => c.latencyMs)) : 0;
-    const max = count ? Math.max(...filtered.map((c) => c.latencyMs)) : 0;
+    const min = count ? Math.min(...filteredData.map((c) => c.latencyMs)) : 0;
+    const max = count ? Math.max(...filteredData.map((c) => c.latencyMs)) : 0;
 
     const visibleExchanges = Array.from(
-      new Set(filtered.map((c) => c.exchange))
+      new Set(filteredData.map((c) => c.exchange))
     ).length;
 
     return { count, avg, min, max, visibleExchanges };
-  }, [filtered]);
+  }, [filteredData]);
 
   return (
     <div className="bg-white/5 p-3 rounded-lg shadow-sm w-full">

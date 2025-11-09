@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 
-import mockLatency from "@/data/mockLatencyConnections.json";
+import mockLatency from "@/data/latencyConnections.json";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

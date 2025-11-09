@@ -18,7 +18,7 @@ export async function GET() {
           dateEnd: toISOStringUTC(dateEnd),
           dateStart: toISOStringUTC(dateStart),
           format: "json",
-          location: "US,AP,SA",
+          location: "US,AP,SA,EU,UK",
         },
         headers: {
           Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,

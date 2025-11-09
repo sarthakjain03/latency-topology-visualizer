@@ -11,6 +11,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
+import { CloudProvider } from "@/lib/constants";
 
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { useRealTimeLatency } from "@/hooks/useRealTimeLatency";
@@ -164,7 +165,7 @@ const Map = () => {
                 key={`${exchange.name}-marker`}
                 map={parentMapRef}
                 lngLat={exchange.coords as [number, number]}
-                provider={exchange.provider as "AWS" | "GCP" | "Azure"}
+                provider={exchange.provider as CloudProvider}
                 crytoOrg={exchange.name}
                 imageUrl={exchange.imageUrl}
                 city={exchange.city}
@@ -180,7 +181,7 @@ const Map = () => {
                   key={`${cloudData.provider}-${region.code}-marker`}
                   map={parentMapRef}
                   lngLat={region.coords as [number, number]}
-                  provider={cloudData.provider as "AWS" | "GCP" | "Azure"}
+                  provider={cloudData.provider as CloudProvider}
                   country={region.name}
                   code={region.code}
                 />

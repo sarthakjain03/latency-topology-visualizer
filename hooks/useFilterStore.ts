@@ -1,5 +1,6 @@
 "use client";
 import { create } from "zustand";
+import { cryptoExchanges, cloudProviders } from "@/lib/constants";
 
 export type VisualizationMode = "realtime" | "historical" | "regions";
 
@@ -16,20 +17,13 @@ export type FilterState = {
   toggleProvider: (provider: string) => void;
   setLatencyRange: (r: [number, number]) => void;
   setQuery: (q: string) => void;
-  setLayer: (layer: "realtime" | "historical" | "regions", v: boolean) => void;
+  setLayer: (layer: VisualizationMode, v: boolean) => void;
   resetAll: () => void;
 };
 
 export const useFilterStore = create<FilterState>((set) => ({
-  selectedExchanges: [
-    "Binance",
-    "Bybit",
-    "OKX",
-    "Deribit",
-    "Kraken",
-    "Coinbase Pro",
-  ],
-  selectedProviders: ["AWS", "GCP", "Azure"],
+  selectedExchanges: cryptoExchanges,
+  selectedProviders: cloudProviders,
   latencyRange: [0, 300],
   query: "",
 
@@ -70,15 +64,8 @@ export const useFilterStore = create<FilterState>((set) => ({
 
   resetAll: () =>
     set({
-      selectedExchanges: [
-        "Binance",
-        "Bybit",
-        "OKX",
-        "Deribit",
-        "Kraken",
-        "Coinbase Pro",
-      ],
-      selectedProviders: ["AWS", "GCP", "Azure"],
+      selectedExchanges: cryptoExchanges,
+      selectedProviders: cloudProviders,
       latencyRange: [0, 300],
       query: "",
       showRealtime: true,

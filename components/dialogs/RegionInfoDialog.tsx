@@ -7,16 +7,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Region } from "@/lib/constants";
 
 interface RegionProps {
-  region: {
-    provider: string;
-    code: string;
-    name?: string;
-    color?: string;
-    serverCount?: number;
-    exchanges?: Array<{ name: string; city?: string; provider?: string }>;
-  };
+  region: Region;
   onClose: () => void;
 }
 

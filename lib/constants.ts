@@ -1,3 +1,24 @@
+export const cryptoExchanges = [
+  "Binance",
+  "Bybit",
+  "OKX",
+  "Deribit",
+  "Kraken",
+  "Coinbase Pro",
+];
+
+export const cloudProviders = ["AWS", "GCP", "Azure"];
+
+export type CloudProvider = "AWS" | "GCP" | "Azure";
+export type Region = {
+  provider: string;
+  code: string;
+  name?: string;
+  color?: string;
+  serverCount?: number;
+  exchanges?: Array<{ name: string; city?: string; provider?: string }>;
+};
+
 export const logos: Record<string, string> = {
   AWS: "https://icon2.cleanpng.com/20180817/vog/8968d0640f2c4053333ce7334314ef83.webp",
   GCP: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKqhrpyiPo_hqQ42khSzMSiKfyZiFEtA1UIw&s",

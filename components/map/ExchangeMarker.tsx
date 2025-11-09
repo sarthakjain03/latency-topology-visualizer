@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { logos, colorMapping } from "@/lib/constants";
+import { logos, colorMapping, CloudProvider } from "@/lib/constants";
 
 const ExchangeMarker = ({
   map,
@@ -15,7 +15,7 @@ const ExchangeMarker = ({
 }: {
   map: mapboxgl.Map | null;
   lngLat: [number, number];
-  provider: "AWS" | "GCP" | "Azure";
+  provider: CloudProvider;
   crytoOrg: string;
   imageUrl: string;
   city: string;

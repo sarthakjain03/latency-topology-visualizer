@@ -5,10 +5,9 @@ import exchanges from "@/data/exchanges.json";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { Feature } from "geojson";
 import RegionInfoDialog from "../dialogs/RegionInfoDialog";
+import { Region } from "@/lib/constants";
 
-interface Props {
-  map: mapboxgl.Map | null;
-}
+type RegionState = Region | null;
 
 function buildFeatures() {
   const features: Feature[] = [];
@@ -63,16 +62,13 @@ const FILL_LAYER_ID = "cloud-regions-fill";
 const CIRCLE_LAYER_ID = "cloud-regions-circle";
 const LABEL_LAYER_ID = "cloud-regions-label";
 
-export default function CloudRegionsLayer({ map }: Props) {
+export default function CloudRegionsLayer({
+  map,
+}: {
+  map: mapboxgl.Map | null;
+}) {
   const showRegions = useFilterStore((s) => s.showRegions);
-  const [selectedRegion, setSelectedRegion] = useState<{
-    provider: string;
-    code: string;
-    name?: string;
-    color?: string;
-    serverCount?: number;
-    exchanges?: Array<{ name: string; city?: string; provider?: string }>;
-  } | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<RegionState>(null);
 
   const geojson = useMemo(() => buildFeatures(), []);
 

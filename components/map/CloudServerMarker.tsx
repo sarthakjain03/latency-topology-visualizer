@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { logos, colorMapping } from "@/lib/constants";
+import { logos, colorMapping, CloudProvider } from "@/lib/constants";
 
 const CloudServerMarker = ({
   map,
@@ -13,7 +13,7 @@ const CloudServerMarker = ({
 }: {
   map: mapboxgl.Map | null;
   lngLat: [number, number];
-  provider: "AWS" | "GCP" | "Azure";
+  provider: CloudProvider;
   country: string;
   code: string;
 }) => {

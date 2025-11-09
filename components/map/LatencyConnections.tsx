@@ -3,7 +3,7 @@ import { useEffect, useCallback, useMemo, useState } from "react";
 
 import exchanges from "@/data/exchanges.json";
 import cloudRegions from "@/data/cloudRegions.json";
-import mockLatencyConnections from "@/data/mockLatencyConnections.json";
+import mockLatencyConnections from "@/data/latencyConnections.json";
 import { Feature } from "geojson";
 import { useFilterStore } from "@/hooks/useFilterStore";
 
@@ -237,11 +237,7 @@ const LatencyConnections = ({
     let animationFrameId: number;
 
     const startAnimation = () => {
-      let index1 = 0;
-      let index2 = 1;
-      let index3 = 1;
-      let index4 = 1;
-      let index5 = 1;
+      let indexArray = [0, 1, 1, 1, 1];
       let frameCount = 0;
 
       const frame = () => {
@@ -258,15 +254,15 @@ const LatencyConnections = ({
             ["linear"],
             ["line-progress"],
             0,
-            greenShades[index1],
+            greenShades[indexArray[0]],
             0.25,
-            greenShades[index2],
+            greenShades[indexArray[1]],
             0.5,
-            greenShades[index3],
+            greenShades[indexArray[2]],
             0.75,
-            greenShades[index4],
+            greenShades[indexArray[3]],
             1,
-            greenShades[index5],
+            greenShades[indexArray[4]],
           ]);
 
           map.setPaintProperty("medium-latency-lines", "line-gradient", [
@@ -274,15 +270,15 @@ const LatencyConnections = ({
             ["linear"],
             ["line-progress"],
             0,
-            yellowShades[index1],
+            yellowShades[indexArray[0]],
             0.25,
-            yellowShades[index2],
+            yellowShades[indexArray[1]],
             0.5,
-            yellowShades[index3],
+            yellowShades[indexArray[2]],
             0.75,
-            yellowShades[index4],
+            yellowShades[indexArray[3]],
             1,
-            yellowShades[index5],
+            yellowShades[indexArray[4]],
           ]);
 
           map.setPaintProperty("high-latency-lines", "line-gradient", [
@@ -290,33 +286,22 @@ const LatencyConnections = ({
             ["linear"],
             ["line-progress"],
             0,
-            redShades[index1],
+            redShades[indexArray[0]],
             0.25,
-            redShades[index2],
+            redShades[indexArray[1]],
             0.5,
-            redShades[index3],
+            redShades[indexArray[2]],
             0.75,
-            redShades[index4],
+            redShades[indexArray[3]],
             1,
-            redShades[index5],
+            redShades[indexArray[4]],
           ]);
 
-          if (index1 === 0) {
-            index2 = 0;
-            index1 = 1;
-          } else if (index2 === 0) {
-            index3 = 0;
-            index2 = 1;
-          } else if (index3 === 0) {
-            index4 = 0;
-            index3 = 1;
-          } else if (index4 === 0) {
-            index5 = 0;
-            index4 = 1;
-          } else {
-            index1 = 0;
-            index5 = 1;
-          }
+          const shifted = [
+            indexArray[indexArray.length - 1],
+            ...indexArray.slice(0, -1),
+          ];
+          indexArray = [...shifted];
         }
 
         animationFrameId = requestAnimationFrame(frame);
