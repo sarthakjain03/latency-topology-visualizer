@@ -14,7 +14,7 @@ import cloudRegions from "@/data/cloudRegions.json";
 
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { useRealTimeLatency } from "@/hooks/useRealTimeLatency";
-import HistoricalModal from "./HistoricalModal";
+import HistoricalModal from "../dialogs/HistoricalDataDialog";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 

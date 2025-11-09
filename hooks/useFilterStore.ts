@@ -4,20 +4,14 @@ import { create } from "zustand";
 export type VisualizationMode = "realtime" | "historical" | "regions";
 
 export type FilterState = {
-  // filters
-  selectedExchanges: string[]; // names
-  selectedProviders: string[]; // AWS, GCP, Azure, Cloudflare...
-  latencyRange: [number, number]; // ms [min, max]
-
-  // search
+  selectedExchanges: string[];
+  selectedProviders: string[];
+  latencyRange: [number, number];
   query: string;
-
-  // toggles / visual layers
   showRealtime: boolean;
   showHistorical: boolean;
   showRegions: boolean;
 
-  // actions
   toggleExchange: (name: string) => void;
   toggleProvider: (provider: string) => void;
   setLatencyRange: (r: [number, number]) => void;

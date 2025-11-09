@@ -4,14 +4,13 @@ import cloudRegions from "@/data/cloudRegions.json";
 import exchanges from "@/data/exchanges.json";
 import { useFilterStore } from "@/hooks/useFilterStore";
 import { Feature } from "geojson";
-import RegionInfoDialog from "./RegionInfoDialog";
+import RegionInfoDialog from "../dialogs/RegionInfoDialog";
 
 interface Props {
   map: mapboxgl.Map | null;
 }
 
 function buildFeatures() {
-  // For each provider -> region produce a point feature and compute counts
   const features: Feature[] = [];
 
   cloudRegions.forEach((providerObj) => {
@@ -19,9 +18,7 @@ function buildFeatures() {
     const color: string = "#888";
 
     (providerObj.regions || []).forEach((r) => {
-      // compute server count and list from exchanges.json
       const exchangesInRegion = exchanges.filter((ex) => {
-        // match region code or provider + approximate region name
         return (
           ex.region === r.code ||
           ex.region === r.code ||
@@ -90,19 +87,16 @@ export default function CloudRegionsLayer({ map }: Props) {
         data: geojson,
       });
 
-      // circle layer for visual cluster / bubble
       map.addLayer({
         id: CIRCLE_LAYER_ID,
         type: "circle",
         source: SOURCE_ID,
         paint: {
-          // use feature property color
           "circle-color": ["get", "color"],
           "circle-opacity": 0.18,
           "circle-stroke-color": ["get", "color"],
           "circle-stroke-opacity": 0.8,
           "circle-stroke-width": 1.5,
-          // scale radius by serverCount (min 6 -> max 40)
           "circle-radius": [
             "interpolate",
             ["linear"],
@@ -123,7 +117,6 @@ export default function CloudRegionsLayer({ map }: Props) {
         },
       });
 
-      // optional fill layer (subtle)
       map.addLayer({
         id: FILL_LAYER_ID,
         type: "circle",
@@ -134,7 +127,6 @@ export default function CloudRegionsLayer({ map }: Props) {
         },
       });
 
-      // label layer for server count
       map.addLayer({
         id: LABEL_LAYER_ID,
         type: "symbol",
@@ -158,7 +150,6 @@ export default function CloudRegionsLayer({ map }: Props) {
         },
       });
 
-      // pointer cursor on hover
       map.on("mouseenter", CIRCLE_LAYER_ID, () => {
         map.getCanvas().style.cursor = "pointer";
       });
@@ -166,11 +157,9 @@ export default function CloudRegionsLayer({ map }: Props) {
         map.getCanvas().style.cursor = "";
       });
 
-      // click handler: open dialog
       map.on("click", CIRCLE_LAYER_ID, (e) => {
         if (!e.features || !e.features.length) return;
         const props = e.features[0].properties;
-        // properties are strings when coming from Mapbox - parse serverCount if needed
         const parsed = {
           provider: props?.provider,
           code: props?.code,
@@ -185,13 +174,11 @@ export default function CloudRegionsLayer({ map }: Props) {
       });
     };
 
-    // ensure style loaded
     setTimeout(() => {
       if (map.isStyleLoaded()) addLayers();
       else map.once("load", addLayers);
     }, 500);
 
-    // update visibility based on store
     const updateVisibility = () => {
       const visible = showRegions ? "visible" : "none";
       if (map.getLayer(CIRCLE_LAYER_ID))
@@ -204,10 +191,8 @@ export default function CloudRegionsLayer({ map }: Props) {
 
     updateVisibility();
 
-    // re-apply on styledata in case style changes
     const onStyleData = () => {
       if (!map.getSource(SOURCE_ID)) {
-        // re-add layers if style changed
         addLayers();
       }
       updateVisibility();
@@ -230,7 +215,6 @@ export default function CloudRegionsLayer({ map }: Props) {
 
   return (
     <>
-      {/* Dialog shows when a region is selected */}
       {selectedRegion && (
         <RegionInfoDialog
           region={selectedRegion}

@@ -4,7 +4,6 @@ import { useFilterStore } from "@/hooks/useFilterStore";
 import MetricsDashboard from "./MetricsDashboard";
 import exchanges from "@/data/exchanges.json";
 
-// shadcn UI imports (adjust paths if needed)
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -31,9 +30,7 @@ const ControlPanel: React.FC = () => {
 
   const exchangeList = useMemo(() => exchanges.map((e) => e.name), []);
 
-  // latency slider helper
   const onLatencyChange = (vals: number[]) => {
-    // Slider returns array, ensure tuple
     const r: [number, number] = [vals[0] ?? 0, vals[1] ?? 300];
     setLatencyRange(r);
   };
@@ -41,13 +38,11 @@ const ControlPanel: React.FC = () => {
   return (
     <aside className="w-full lg:w-80 px-4 pb-4 space-y-4 bg-slate-900/60 rounded-lg text-white">
       <div className="flex items-center justify-end">
-        {/* <h2 className="text-lg font-bold">Control Panel</h2> */}
         <Button variant="ghost" size="sm" onClick={() => resetAll()}>
           Reset
         </Button>
       </div>
 
-      {/* Search */}
       <div>
         <label className="text-sm text-gray-300">
           Search Exchanges / Regions
@@ -62,7 +57,6 @@ const ControlPanel: React.FC = () => {
         />
       </div>
 
-      {/* Providers */}
       <div>
         <label className="text-sm text-gray-300">Cloud Providers</label>
         <div className="flex flex-wrap gap-2 mt-2">
@@ -83,7 +77,6 @@ const ControlPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Exchanges */}
       <div>
         <label className="text-sm text-gray-300">Exchanges</label>
         <div className="max-h-36 overflow-auto mt-2 grid gap-2">
@@ -102,7 +95,6 @@ const ControlPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Latency range slider */}
       <div>
         <label className="text-sm text-gray-300">Latency Range (ms)</label>
         <div className="mt-2">
@@ -120,7 +112,6 @@ const ControlPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Layer toggles */}
       <div className="flex flex-col gap-2">
         <Button
           variant="secondary"
@@ -142,18 +133,6 @@ const ControlPanel: React.FC = () => {
           />
         </div>
 
-        {/* <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm">Historical</div>
-            <div className="text-xs text-gray-400">Show time-series panels</div>
-          </div>
-          <Switch
-            checked={showHistorical}
-            onCheckedChange={(v: boolean) => setLayer("historical", !!v)}
-            className="data-[state=checked]:bg-sky-400 data-[state=unchecked]:bg-slate-700"
-          />
-        </div> */}
-
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm">Regions</div>
@@ -169,7 +148,6 @@ const ControlPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Metrics */}
       <MetricsDashboard />
     </aside>
   );

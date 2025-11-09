@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -93,15 +93,15 @@ function downloadCSV(data: Point[], fileName: string) {
   link.click();
 }
 
-interface HistoricalModalProps {
+interface HistoricalDataDialogProps {
   showHistorical: boolean;
   onClose: () => void;
 }
 
-export default function HistoricalModal({
+export default function HistoricalDataDialog({
   showHistorical,
   onClose,
-}: HistoricalModalProps) {
+}: HistoricalDataDialogProps) {
   const pairs = useMemo(() => {
     const uniquePairs = new Map<
       string,
@@ -167,10 +167,8 @@ export default function HistoricalModal({
         </DialogHeader>
 
         <Card className="bg-slate-950 border border-slate-800 p-4 sm:p-6 mt-3">
-          {/* --- Controls --- */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
-              {/* Pair Select */}
               <div>
                 <div className="text-sm text-slate-400 mb-1">Select Pair</div>
                 <Select
@@ -190,7 +188,6 @@ export default function HistoricalModal({
                 </Select>
               </div>
 
-              {/* Range Buttons */}
               <div>
                 <div className="text-sm text-slate-400 mb-1">Range</div>
                 <div className="flex flex-wrap gap-2">
@@ -209,7 +206,6 @@ export default function HistoricalModal({
               </div>
             </div>
 
-            {/* Stats & Export */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-2 md:mt-0">
               <div className="flex flex-wrap items-center gap-3 text-sm text-white justify-start sm:justify-end">
                 <span>
@@ -238,7 +234,6 @@ export default function HistoricalModal({
             </div>
           </div>
 
-          {/* --- Chart --- */}
           <div className="w-full h-60 sm:h-[300px] md:h-[360px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={points.map((p) => ({ t: p.t, ms: p.ms }))}>

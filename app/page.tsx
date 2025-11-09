@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Map from "@/components/Map";
+import Map from "@/components/map/Map";
 import ControlPanel from "@/components/ControlPanel";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,10 @@ export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
       <main className="flex h-screen w-screen bg-slate-950 text-white">
-        {/* Desktop / Tablet Sidebar */}
         <div className="hidden lg:block z-20 w-88 p-4 border-r border-white/10 bg-slate-900/70 overflow-y-auto">
           <ControlPanel />
         </div>
 
-        {/* Mobile Header with Hamburger */}
         <div className="absolute top-4 left-4 z-30 lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -50,7 +48,6 @@ export default function Home() {
           </Sheet>
         </div>
 
-        {/* Map (Always visible) */}
         <div className="flex-1 relative">
           <Map />
         </div>
