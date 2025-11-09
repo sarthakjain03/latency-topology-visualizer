@@ -204,13 +204,17 @@ const LatencyConnections = ({
 
     return () => {
       if (!map) return;
-      map.removeLayer("low-latency-lines");
-      map.removeLayer("medium-latency-lines");
-      map.removeLayer("high-latency-lines");
+      if (map.getLayer("low-latency-lines"))
+        map.removeLayer("low-latency-lines");
+      if (map.getLayer("medium-latency-lines"))
+        map.removeLayer("medium-latency-lines");
+      if (map.getLayer("high-latency-lines"))
+        map.removeLayer("high-latency-lines");
 
-      map.removeSource("low-latencies");
-      map.removeSource("medium-latencies");
-      map.removeSource("high-latencies");
+      if (map.getSource("low-latencies")) map.removeSource("low-latencies");
+      if (map.getSource("medium-latencies"))
+        map.removeSource("medium-latencies");
+      if (map.getSource("high-latencies")) map.removeSource("high-latencies");
     };
   }, [map, features]);
 

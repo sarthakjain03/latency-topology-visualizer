@@ -81,7 +81,6 @@ function computeStats(points: Point[]) {
   return { min, max, avg };
 }
 
-// Export CSV utility
 function downloadCSV(data: Point[], fileName: string) {
   const csv = [
     "timestamp,latency_ms",
@@ -132,14 +131,12 @@ export default function HistoricalModal({
 
   useEffect(() => {
     if (!selectedPairKey) return;
-
     const timeout = setTimeout(() => {
       const pair = pairs.find((p) => p.key === selectedPairKey);
       if (!pair) return;
       const hist = generateMockHistory(pair.baseLatency, range);
       setPoints(hist);
     }, 0);
-
     return () => clearTimeout(timeout);
   }, [selectedPairKey, range, pairs]);
 
@@ -154,21 +151,33 @@ export default function HistoricalModal({
 
   return (
     <Dialog open={showHistorical} onOpenChange={onClose}>
-      <DialogContent className="bg-slate-900 text-white border border-slate-800 max-w-[90vw]! w-[90vw]!">
+      <DialogContent
+        className="
+          bg-slate-900 text-white border border-slate-800 
+          max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] 
+          w-[95vw] sm:w-[90vw] md:w-[80vw] 
+          max-h-[90vh] overflow-y-auto
+          p-4 sm:p-6
+        "
+      >
         <DialogHeader>
-          <DialogTitle>📈 Historical Latency Trends</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl font-semibold">
+            📈 Historical Latency Trends
+          </DialogTitle>
         </DialogHeader>
 
-        <Card className="bg-slate-950 border border-slate-800 p-4 mt-2">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
-            <div className="flex flex-wrap items-center gap-3">
+        <Card className="bg-slate-950 border border-slate-800 p-4 sm:p-6 mt-3">
+          {/* --- Controls --- */}
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
+              {/* Pair Select */}
               <div>
-                <div className="text-sm text-slate-400">Select pair</div>
+                <div className="text-sm text-slate-400 mb-1">Select Pair</div>
                 <Select
                   onValueChange={(v) => setSelectedPairKey(v)}
                   value={selectedPairKey ?? undefined}
                 >
-                  <SelectTrigger className="w-64 text-white">
+                  <SelectTrigger className="w-full sm:w-64 text-white">
                     <SelectValue placeholder="Select exchange ↔ region" />
                   </SelectTrigger>
                   <SelectContent>
@@ -181,16 +190,17 @@ export default function HistoricalModal({
                 </Select>
               </div>
 
+              {/* Range Buttons */}
               <div>
-                <div className="text-sm text-slate-400">Range</div>
-                <div className="flex gap-2 mt-1">
+                <div className="text-sm text-slate-400 mb-1">Range</div>
+                <div className="flex flex-wrap gap-2">
                   {TIME_RANGES.map((r) => (
                     <Button
                       key={r.key}
                       variant={range === r.key ? "outline" : "default"}
                       size="sm"
                       onClick={() => setRange(r.key)}
-                      className="text-xs"
+                      className="text-xs sm:text-sm"
                     >
                       {r.label}
                     </Button>
@@ -199,9 +209,9 @@ export default function HistoricalModal({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-sm text-slate-400">Stats:</div>
-              <div className="flex gap-4 text-sm text-white">
+            {/* Stats & Export */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-2 md:mt-0">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-white justify-start sm:justify-end">
                 <span>
                   Avg <strong>{stats.avg} ms</strong>
                 </span>
@@ -215,7 +225,7 @@ export default function HistoricalModal({
               <Button
                 size="sm"
                 variant="secondary"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                 onClick={() =>
                   downloadCSV(
                     points,
@@ -228,21 +238,22 @@ export default function HistoricalModal({
             </div>
           </div>
 
-          <div style={{ width: "100%", height: 360 }}>
+          {/* --- Chart --- */}
+          <div className="w-full h-60 sm:h-[300px] md:h-[360px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={points.map((p) => ({ t: p.t, ms: p.ms }))}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
                 <XAxis
                   dataKey="t"
                   tickFormatter={xTickFormatter}
-                  tick={{ fontSize: 11, fill: "#9ca3af" }}
+                  tick={{ fontSize: 10, fill: "#9ca3af" }}
                   tickLine={false}
                 />
                 <YAxis
                   dataKey="ms"
-                  tick={{ fontSize: 11, fill: "#9ca3af" }}
+                  tick={{ fontSize: 10, fill: "#9ca3af" }}
                   tickLine={false}
-                  width={60}
+                  width={50}
                   unit=" ms"
                 />
                 <Tooltip
@@ -252,6 +263,7 @@ export default function HistoricalModal({
                     backgroundColor: "#0f172a",
                     border: "1px solid #1e293b",
                     color: "#fff",
+                    fontSize: "0.75rem",
                   }}
                 />
                 <Line
@@ -264,7 +276,7 @@ export default function HistoricalModal({
                 />
                 <Brush
                   dataKey="t"
-                  height={30}
+                  height={25}
                   stroke="#06b6d4"
                   travellerWidth={6}
                   fill="#1e293b"

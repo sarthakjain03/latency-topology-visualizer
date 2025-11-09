@@ -35,7 +35,6 @@ const Map = () => {
     query,
   } = useFilterStore();
 
-  // 🗺️ Default center/zoom for reset
   const defaultView = {
     center: [-0.1276, 25.5072] as [number, number],
     zoom: 2,
@@ -43,14 +42,30 @@ const Map = () => {
     bearing: 0,
   };
 
-  // 🗺️ Initialize Map
+  const [viewportZoom, setViewportZoom] = useState(defaultView.zoom);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) setViewportZoom(0.9); // Mobile
+      else if (width < 1024) setViewportZoom(1.5); // Tablet
+      else setViewportZoom(2); // Desktop
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         projection: "globe",
-        zoom: defaultView.zoom,
+        zoom: viewportZoom,
         center: defaultView.center,
+        pitch: defaultView.pitch,
+        bearing: defaultView.bearing,
       });
 
       mapRef.current = map;
@@ -66,9 +81,8 @@ const Map = () => {
       mapRef.current = null;
       setIsMapReady(false);
     };
-  }, []);
+  }, [viewportZoom]);
 
-  // ⏱️ Debounce query input (1s)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query);
@@ -79,18 +93,16 @@ const Map = () => {
     };
   }, [query]);
 
-  // 🔍 Animate map when debouncedQuery changes
   useEffect(() => {
     if (!mapRef.current) return;
     const map = mapRef.current;
 
-    // ⬅️ Reset to default if query cleared
     if (debouncedQuery === "") {
       map.flyTo({
         center: defaultView.center,
-        zoom: defaultView.zoom,
-        pitch: defaultView.pitch,
-        bearing: defaultView.bearing,
+        zoom: viewportZoom,
+        pitch: 0,
+        bearing: 0,
         speed: 0.8,
         curve: 1.2,
         essential: true,
@@ -98,7 +110,6 @@ const Map = () => {
       return;
     }
 
-    // 1️⃣ Try to find exchange match
     const exchange = exchanges.find((ex) =>
       ex.name.toLowerCase().includes(debouncedQuery.toLowerCase())
     );
@@ -116,7 +127,6 @@ const Map = () => {
       return;
     }
 
-    // 2️⃣ Try to find region match
     for (const provider of cloudRegions) {
       const region = provider.regions.find(
         (r) =>
@@ -136,11 +146,15 @@ const Map = () => {
         return;
       }
     }
-  }, [debouncedQuery]);
+  }, [debouncedQuery, viewportZoom]);
 
   return (
     <>
-      <div id="map-container" className="h-full" ref={mapContainerRef}></div>
+      <div
+        id="map-container"
+        ref={mapContainerRef}
+        className="h-[calc(100vh-0px)] w-full relative"
+      ></div>
       {isMapReady && parentMapRef && (
         <>
           {exchanges

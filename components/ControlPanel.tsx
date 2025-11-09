@@ -39,7 +39,7 @@ const ControlPanel: React.FC = () => {
   };
 
   return (
-    <aside className="w-80 p-4 space-y-4 bg-slate-900/60 rounded-lg text-white">
+    <aside className="w-full lg:w-80 px-4 pb-4 space-y-4 bg-slate-900/60 rounded-lg text-white">
       <div className="flex items-center justify-end">
         {/* <h2 className="text-lg font-bold">Control Panel</h2> */}
         <Button variant="ghost" size="sm" onClick={() => resetAll()}>
