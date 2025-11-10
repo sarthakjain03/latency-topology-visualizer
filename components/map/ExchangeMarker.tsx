@@ -76,8 +76,8 @@ const ExchangeMarker = ({
     });
 
     return () => {
-      popup.remove();
-      marker.remove();
+      popup?.remove();
+      marker?.remove();
     };
   }, []);
 

@@ -189,6 +189,21 @@ const LatencyConnections = ({
     );
   }, [highLatencyFeatures]);
 
+  const safeHasLayer = (layerId: string) => {
+    try {
+      return !!map?.getLayer(layerId);
+    } catch {
+      return false;
+    }
+  };
+  const safeHasSource = (layerId: string) => {
+    try {
+      return !!map?.getSource(layerId);
+    } catch {
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!map || !features) return;
 
@@ -204,17 +219,17 @@ const LatencyConnections = ({
 
     return () => {
       if (!map) return;
-      if (map.getLayer("low-latency-lines"))
+      if (safeHasLayer("low-latency-lines"))
         map.removeLayer("low-latency-lines");
-      if (map.getLayer("medium-latency-lines"))
+      if (safeHasLayer("medium-latency-lines"))
         map.removeLayer("medium-latency-lines");
-      if (map.getLayer("high-latency-lines"))
+      if (safeHasLayer("high-latency-lines"))
         map.removeLayer("high-latency-lines");
 
-      if (map.getSource("low-latencies")) map.removeSource("low-latencies");
-      if (map.getSource("medium-latencies"))
+      if (safeHasSource("low-latencies")) map.removeSource("low-latencies");
+      if (safeHasSource("medium-latencies"))
         map.removeSource("medium-latencies");
-      if (map.getSource("high-latencies")) map.removeSource("high-latencies");
+      if (safeHasSource("high-latencies")) map.removeSource("high-latencies");
     };
   }, [map, features]);
 
@@ -235,89 +250,108 @@ const LatencyConnections = ({
   useEffect(() => {
     if (!map) return;
     let animationFrameId: number;
+    let isUnmounted = false;
+
+    const safeSetPaintProperty = (
+      layerId: string,
+      property: string,
+      value: any
+    ) => {
+      try {
+        if (map && safeHasLayer(layerId) && map.isStyleLoaded()) {
+          map.setPaintProperty(layerId, property as any, value);
+        }
+      } catch {}
+    };
 
     const startAnimation = () => {
+      if (!map || isUnmounted) return;
+
       let indexArray = [0, 1, 1, 1, 1];
       let frameCount = 0;
 
       const frame = () => {
+        if (isUnmounted || !map) return;
+
         frameCount++;
+        if (frameCount % 15 === 0 && map?.isStyleLoaded()) {
+          if (
+            safeHasLayer("low-latency-lines") &&
+            safeHasLayer("medium-latency-lines") &&
+            safeHasLayer("high-latency-lines")
+          ) {
+            safeSetPaintProperty("low-latency-lines", "line-gradient", [
+              "interpolate",
+              ["linear"],
+              ["line-progress"],
+              0,
+              greenShades[indexArray[0]],
+              0.25,
+              greenShades[indexArray[1]],
+              0.5,
+              greenShades[indexArray[2]],
+              0.75,
+              greenShades[indexArray[3]],
+              1,
+              greenShades[indexArray[4]],
+            ]);
 
-        if (
-          frameCount % 15 === 0 && // Adjust for speed
-          map.getLayer("low-latency-lines") &&
-          map.getLayer("medium-latency-lines") &&
-          map.getLayer("high-latency-lines")
-        ) {
-          map.setPaintProperty("low-latency-lines", "line-gradient", [
-            "interpolate",
-            ["linear"],
-            ["line-progress"],
-            0,
-            greenShades[indexArray[0]],
-            0.25,
-            greenShades[indexArray[1]],
-            0.5,
-            greenShades[indexArray[2]],
-            0.75,
-            greenShades[indexArray[3]],
-            1,
-            greenShades[indexArray[4]],
-          ]);
+            safeSetPaintProperty("medium-latency-lines", "line-gradient", [
+              "interpolate",
+              ["linear"],
+              ["line-progress"],
+              0,
+              yellowShades[indexArray[0]],
+              0.25,
+              yellowShades[indexArray[1]],
+              0.5,
+              yellowShades[indexArray[2]],
+              0.75,
+              yellowShades[indexArray[3]],
+              1,
+              yellowShades[indexArray[4]],
+            ]);
 
-          map.setPaintProperty("medium-latency-lines", "line-gradient", [
-            "interpolate",
-            ["linear"],
-            ["line-progress"],
-            0,
-            yellowShades[indexArray[0]],
-            0.25,
-            yellowShades[indexArray[1]],
-            0.5,
-            yellowShades[indexArray[2]],
-            0.75,
-            yellowShades[indexArray[3]],
-            1,
-            yellowShades[indexArray[4]],
-          ]);
+            safeSetPaintProperty("high-latency-lines", "line-gradient", [
+              "interpolate",
+              ["linear"],
+              ["line-progress"],
+              0,
+              redShades[indexArray[0]],
+              0.25,
+              redShades[indexArray[1]],
+              0.5,
+              redShades[indexArray[2]],
+              0.75,
+              redShades[indexArray[3]],
+              1,
+              redShades[indexArray[4]],
+            ]);
 
-          map.setPaintProperty("high-latency-lines", "line-gradient", [
-            "interpolate",
-            ["linear"],
-            ["line-progress"],
-            0,
-            redShades[indexArray[0]],
-            0.25,
-            redShades[indexArray[1]],
-            0.5,
-            redShades[indexArray[2]],
-            0.75,
-            redShades[indexArray[3]],
-            1,
-            redShades[indexArray[4]],
-          ]);
-
-          const shifted = [
-            indexArray[indexArray.length - 1],
-            ...indexArray.slice(0, -1),
-          ];
-          indexArray = [...shifted];
+            const shifted = [
+              indexArray[indexArray.length - 1],
+              ...indexArray.slice(0, -1),
+            ];
+            indexArray = [...shifted];
+          }
         }
 
         animationFrameId = requestAnimationFrame(frame);
       };
+
       frame();
     };
 
-    map.off("styledata", startAnimation);
-
-    setTimeout(() => {
-      if (map.isStyleLoaded()) startAnimation();
-      else map.once("load", startAnimation);
+    // Delay slightly to ensure map is ready
+    const startTimeout = setTimeout(() => {
+      if (map?.isStyleLoaded()) startAnimation();
+      else map?.once("load", startAnimation);
     }, 500);
 
     return () => {
+      isUnmounted = true;
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      clearTimeout(startTimeout);
     };
   }, [map]);
 

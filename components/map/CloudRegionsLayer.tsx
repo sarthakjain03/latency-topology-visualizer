@@ -22,11 +22,11 @@ const providerColors: Record<string, string> = {
   default: "#888888",
 };
 
-function buildFeatures() {
+const buildFeatures = () => {
   const polygonFeatures: Feature<Geometry>[] = [];
   const markerFeatures: Feature<Geometry>[] = [];
 
-  cloudRegions.forEach((providerObj) => {
+  cloudRegions?.forEach((providerObj) => {
     const providerName: string = providerObj.provider;
     const color = providerColors[providerName] || providerColors.default;
 
@@ -100,13 +100,9 @@ function buildFeatures() {
     polygons: turf.featureCollection(polygonFeatures),
     markers: turf.featureCollection(markerFeatures),
   };
-}
+};
 
-export default function CloudRegionsLayer({
-  map,
-}: {
-  map: mapboxgl.Map | null;
-}) {
+const CloudRegionsLayer = ({ map }: { map: mapboxgl.Map | null }) => {
   const showRegions = useFilterStore((s) => s.showRegions);
   const [selectedRegion, setSelectedRegion] = useState<RegionState>(null);
 
@@ -216,7 +212,7 @@ export default function CloudRegionsLayer({
     map.on("styledata", onStyleData);
 
     return () => {
-      if (!map?.getStyle()) return;
+      if (!map || !map?.getStyle()) return;
       try {
         [POLYGON_LAYER_ID, CIRCLE_LAYER_ID, LABEL_LAYER_ID].forEach((layer) => {
           if (map.getLayer(layer)) map.removeLayer(layer);
@@ -241,4 +237,6 @@ export default function CloudRegionsLayer({
       )}
     </>
   );
-}
+};
+
+export default CloudRegionsLayer;

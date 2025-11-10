@@ -59,7 +59,7 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    if (mapContainerRef.current && !mapRef.current) {
+    if (mapContainerRef?.current && !mapRef.current) {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         projection: "globe",
@@ -78,7 +78,7 @@ const Map = () => {
     }
 
     return () => {
-      mapRef.current?.remove();
+      mapRef?.current?.remove();
       mapRef.current = null;
       setIsMapReady(false);
     };
