@@ -176,9 +176,9 @@ const Map = () => {
           {cloudRegions
             ?.filter((cloud) => selectedProviders?.includes(cloud.provider))
             ?.map((cloudData) =>
-              cloudData?.regions?.map((region) => (
+              cloudData?.regions?.map((region, index) => (
                 <CloudServerMarker
-                  key={`${cloudData.provider}-${region.code}-marker`}
+                  key={`${cloudData.provider}-${region.code}-marker-${index}`}
                   map={parentMapRef}
                   lngLat={region.coords as [number, number]}
                   provider={cloudData.provider as CloudProvider}

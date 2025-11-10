@@ -11,6 +11,11 @@
         "code": "ap-northeast-1",
         "name": "Tokyo Region (South Korea Node), Seoul, South Korea",
         "coords": [126.978, 37.5665]
+      },
+      {
+        "code": "us-east-1",
+        "name": "N. Virginia (East Coast Edge), Boston, USA",
+        "coords": [-71.0589, 42.3601]
       }
     ]
   },
@@ -26,6 +31,11 @@
         "code": "europe-west3",
         "name": "Frankfurt Region (Switzerland Node), Zurich, Switzerland",
         "coords": [8.5417, 47.3769]
+      },
+      {
+        "code": "europe-west3",
+        "name": "Frankfurt (Central Europe Hub), Vienna, Austria",
+        "coords": [16.3738, 48.2082]
       }
     ]
   },

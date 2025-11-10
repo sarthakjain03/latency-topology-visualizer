@@ -1,66 +1,106 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import * as turf from "@turf/turf";
 import cloudRegions from "@/data/cloudRegions.json";
 import exchanges from "@/data/exchanges.json";
 import { useFilterStore } from "@/hooks/useFilterStore";
-import { Feature } from "geojson";
+import { Feature, Geometry } from "geojson";
 import RegionInfoDialog from "../dialogs/RegionInfoDialog";
 import { Region } from "@/lib/constants";
 
 type RegionState = Region | null;
 
+const SOURCE_ID = "cloud-regions-source";
+const POLYGON_LAYER_ID = "cloud-regions-polygon";
+const CIRCLE_LAYER_ID = "cloud-regions-circle";
+const LABEL_LAYER_ID = "cloud-regions-label";
+
+const providerColors: Record<string, string> = {
+  AWS: "#3B82F6", // medium blue
+  GCP: "#8B5CF6", // medium purple
+  Azure: "#14B8A6", // medium teal
+  default: "#888888",
+};
+
 function buildFeatures() {
-  const features: Feature[] = [];
+  const polygonFeatures: Feature<Geometry>[] = [];
+  const markerFeatures: Feature<Geometry>[] = [];
 
   cloudRegions.forEach((providerObj) => {
     const providerName: string = providerObj.provider;
-    const color: string = "#888";
+    const color = providerColors[providerName] || providerColors.default;
 
+    const grouped: Record<string, any[]> = {};
     (providerObj.regions || []).forEach((r) => {
-      const exchangesInRegion = exchanges.filter((ex) => {
-        return (
-          ex.region === r.code ||
-          ex.region === r.code ||
-          (ex.provider === providerName && ex.region && ex.region === r.code)
-        );
-      });
+      if (!grouped[r.code]) grouped[r.code] = [];
+      grouped[r.code].push(r);
+    });
 
-      const serverCount = exchangesInRegion.length;
+    Object.keys(grouped).forEach((regionCode) => {
+      const regionsGroup = grouped[regionCode];
+      const regionCoords = regionsGroup.map((r) => r.coords);
 
-      const feature: Feature = {
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: r.coords,
-        },
-        properties: {
+      const exchangesInRegion = exchanges.filter(
+        (ex) =>
+          ex.region === regionCode ||
+          (ex.provider === providerName && ex.region === regionCode)
+      );
+
+      const exchangeCoords = exchangesInRegion
+        .map((ex) => ex.coords)
+        .filter(Boolean);
+
+      const allPoints = [...regionCoords, ...exchangeCoords].filter(
+        (p) => Array.isArray(p) && p.length === 2
+      );
+
+      if (allPoints.length === 0) return;
+
+      const pointsFC = turf.featureCollection(
+        allPoints.map((p) => turf.point(p))
+      );
+      const hull = turf.convex(pointsFC);
+
+      if (hull) {
+        hull.id = `${providerName}-${regionCode}-poly-${regionsGroup[0].name}`;
+        hull.properties = {
           provider: providerName,
-          code: r.code,
-          name: r.name,
+          code: regionCode,
           color,
-          serverCount,
+          name: regionsGroup[0].name,
+          serverCount: exchangesInRegion.length,
           exchanges: exchangesInRegion.map((e) => ({
             name: e.name,
             city: e.city || e.region || "—",
             provider: e.provider,
           })),
-        },
-      };
+        };
+        polygonFeatures.push(hull);
+      }
 
-      features.push(feature);
+      const centroid = turf.centroid(pointsFC);
+      centroid.id = `${providerName}-${regionCode}-marker-${regionsGroup[0].name}`;
+      centroid.properties = {
+        provider: providerName,
+        code: regionCode,
+        color,
+        name: regionsGroup[0].name,
+        serverCount: exchangesInRegion.length,
+        exchanges: exchangesInRegion.map((e) => ({
+          name: e.name,
+          city: e.city || e.region || "—",
+          provider: e.provider,
+        })),
+      };
+      markerFeatures.push(centroid);
     });
   });
 
   return {
-    type: "FeatureCollection",
-    features,
-  } as GeoJSON.FeatureCollection;
+    polygons: turf.featureCollection(polygonFeatures),
+    markers: turf.featureCollection(markerFeatures),
+  };
 }
-
-const SOURCE_ID = "cloud-regions-source";
-const FILL_LAYER_ID = "cloud-regions-fill";
-const CIRCLE_LAYER_ID = "cloud-regions-circle";
-const LABEL_LAYER_ID = "cloud-regions-label";
 
 export default function CloudRegionsLayer({
   map,
@@ -70,7 +110,7 @@ export default function CloudRegionsLayer({
   const showRegions = useFilterStore((s) => s.showRegions);
   const [selectedRegion, setSelectedRegion] = useState<RegionState>(null);
 
-  const geojson = useMemo(() => buildFeatures(), []);
+  const { polygons, markers } = useMemo(() => buildFeatures(), []);
 
   useEffect(() => {
     if (!map) return;
@@ -80,53 +120,41 @@ export default function CloudRegionsLayer({
 
       map.addSource(SOURCE_ID, {
         type: "geojson",
-        data: geojson,
+        data: polygons,
       });
 
       map.addLayer({
-        id: CIRCLE_LAYER_ID,
-        type: "circle",
+        id: POLYGON_LAYER_ID,
+        type: "fill",
         source: SOURCE_ID,
         paint: {
-          "circle-color": ["get", "color"],
-          "circle-opacity": 0.18,
-          "circle-stroke-color": ["get", "color"],
-          "circle-stroke-opacity": 0.8,
-          "circle-stroke-width": 1.5,
-          "circle-radius": [
-            "interpolate",
-            ["linear"],
-            ["coalesce", ["get", "serverCount"], 0],
-            0,
-            6,
-            1,
-            10,
-            5,
-            18,
-            10,
-            26,
-            20,
-            38,
-            50,
-            50,
-          ],
+          "fill-color": ["get", "color"],
+          "fill-opacity": 0.15,
+          "fill-outline-color": ["get", "color"],
         },
       });
 
+      map.addSource("cloud-region-markers", {
+        type: "geojson",
+        data: markers,
+      });
       map.addLayer({
-        id: FILL_LAYER_ID,
+        id: CIRCLE_LAYER_ID,
         type: "circle",
-        source: SOURCE_ID,
+        source: "cloud-region-markers",
         paint: {
           "circle-color": ["get", "color"],
-          "circle-opacity": 0.06,
+          "circle-stroke-color": "#111",
+          "circle-stroke-width": 1.5,
+          "circle-opacity": 0.85,
+          "circle-radius": 6,
         },
       });
 
       map.addLayer({
         id: LABEL_LAYER_ID,
         type: "symbol",
-        source: SOURCE_ID,
+        source: "cloud-region-markers",
         layout: {
           "text-field": [
             "format",
@@ -136,13 +164,12 @@ export default function CloudRegionsLayer({
             ["get", "code"],
           ],
           "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-          "text-size": 12,
-          "text-line-height": 1.1,
-          "text-anchor": "center",
-          "text-offset": [0, 0.5],
+          "text-size": 11,
+          "text-anchor": "top",
+          "text-offset": [0, 1.2],
         },
         paint: {
-          "text-color": "#000",
+          "text-color": "#111827",
         },
       });
 
@@ -154,60 +181,55 @@ export default function CloudRegionsLayer({
       });
 
       map.on("click", CIRCLE_LAYER_ID, (e) => {
-        if (!e.features || !e.features.length) return;
+        if (!e.features?.length) return;
         const props = e.features[0].properties;
+        if (!props) return;
         const parsed = {
-          provider: props?.provider,
-          code: props?.code,
-          name: props?.name,
-          color: props?.color,
-          serverCount: Number(props?.serverCount ?? 0),
-          exchanges: props?.exchanges
-            ? JSON.parse(props.exchanges)
-            : props?.exchanges,
+          provider: props.provider,
+          code: props.code,
+          name: props.name,
+          color: props.color,
+          serverCount: Number(props.serverCount ?? 0),
+          exchanges: props.exchanges ? JSON.parse(props.exchanges) : null,
         };
         setSelectedRegion(parsed);
       });
     };
 
-    setTimeout(() => {
-      if (map.isStyleLoaded()) addLayers();
-      else map.once("load", addLayers);
-    }, 500);
+    if (map.isStyleLoaded()) addLayers();
+    else map.once("load", addLayers);
 
     const updateVisibility = () => {
       const visible = showRegions ? "visible" : "none";
-      if (map.getLayer(CIRCLE_LAYER_ID))
-        map.setLayoutProperty(CIRCLE_LAYER_ID, "visibility", visible);
-      if (map.getLayer(FILL_LAYER_ID))
-        map.setLayoutProperty(FILL_LAYER_ID, "visibility", visible);
-      if (map.getLayer(LABEL_LAYER_ID))
-        map.setLayoutProperty(LABEL_LAYER_ID, "visibility", visible);
+      [POLYGON_LAYER_ID, CIRCLE_LAYER_ID, LABEL_LAYER_ID].forEach((layer) => {
+        if (map.getLayer(layer))
+          map.setLayoutProperty(layer, "visibility", visible);
+      });
     };
-
     updateVisibility();
 
     const onStyleData = () => {
-      if (!map.getSource(SOURCE_ID)) {
-        addLayers();
-      }
+      if (!map.getSource(SOURCE_ID)) addLayers();
       updateVisibility();
     };
+
     map.on("styledata", onStyleData);
 
     return () => {
-      if (!map || !map.getStyle()) return;
+      if (!map?.getStyle()) return;
       try {
-        if (map.getLayer(CIRCLE_LAYER_ID)) map.removeLayer(CIRCLE_LAYER_ID);
-        if (map.getLayer(FILL_LAYER_ID)) map.removeLayer(FILL_LAYER_ID);
-        if (map.getLayer(LABEL_LAYER_ID)) map.removeLayer(LABEL_LAYER_ID);
+        [POLYGON_LAYER_ID, CIRCLE_LAYER_ID, LABEL_LAYER_ID].forEach((layer) => {
+          if (map.getLayer(layer)) map.removeLayer(layer);
+        });
         if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+        if (map.getSource("cloud-region-markers"))
+          map.removeSource("cloud-region-markers");
       } catch (err) {
         console.error(err);
       }
       map.off("styledata", onStyleData);
     };
-  }, [map, geojson, showRegions]);
+  }, [map, polygons, markers, showRegions]);
 
   return (
     <>
