@@ -21,7 +21,7 @@ This Latency Topology Visualizer is a Next.js application that displays a 3D wor
 - [Recharts](https://recharts.org/)
 - [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Turf.js] (https://turfjs.org/docs/getting-started)
+- [Turf.js](https://turfjs.org/docs/getting-started)
 
 ## Steps to Setup and Run the Project Locally
 
