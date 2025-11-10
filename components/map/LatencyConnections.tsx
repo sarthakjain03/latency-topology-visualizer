@@ -342,7 +342,6 @@ const LatencyConnections = ({
       frame();
     };
 
-    // Delay slightly to ensure map is ready
     const startTimeout = setTimeout(() => {
       if (map?.isStyleLoaded()) startAnimation();
       else map?.once("load", startAnimation);
